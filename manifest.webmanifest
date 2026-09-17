@@ -1,6 +1,6 @@
 {
-  "name": "Meine Lesebibliothek",
-  "short_name": "Lesebibliothek",
+  "name": "My Library",
+  "short_name": "My Library",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
