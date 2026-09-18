@@ -1,4 +1,4 @@
-const CACHE = "mylibrary-v8";
+const CACHE = "mylibrary-v9";
 const APP = ["./", "./index.html", "./manifest.webmanifest", "./icon-180.png", "./icon-512.png"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(APP)).then(() => self.skipWaiting())));
 self.addEventListener("activate", event => event.waitUntil(
