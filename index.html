@@ -482,6 +482,12 @@ render();
 queueCovers(books);
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
     const registration = await navigator.serviceWorker.register("service-worker.js");
     registration.update();
   });
