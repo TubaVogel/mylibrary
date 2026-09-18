@@ -1,5 +1,6 @@
-const CACHE = "mylibrary-v9";
-const APP = ["./", "./index.html", "./manifest.webmanifest", "./icon-180.png", "./icon-512.png"];
+const CACHE = "mylibrary-v10";
+const OFFLINE_PAGE = "./index.html?v=10";
+const APP = [OFFLINE_PAGE, "./manifest.webmanifest", "./icon-180.png", "./icon-512.png"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(APP)).then(() => self.skipWaiting())));
 self.addEventListener("activate", event => event.waitUntil(
   caches.keys()
@@ -13,14 +14,14 @@ self.addEventListener("fetch", event => {
   if (event.request.mode === "navigate") {
     event.respondWith(fetch(event.request).then(response => {
       const copy = response.clone();
-      caches.open(CACHE).then(cache => cache.put("./index.html", copy));
+      caches.open(CACHE).then(cache => cache.put(OFFLINE_PAGE, copy));
       return response;
-    }).catch(() => caches.match("./index.html")));
+    }).catch(() => caches.match(OFFLINE_PAGE)));
     return;
   }
   event.respondWith(caches.match(event.request).then(hit => hit || fetch(event.request).then(response => {
     const copy = response.clone();
     caches.open(CACHE).then(cache => cache.put(event.request, copy));
     return response;
-  }).catch(() => caches.match("./index.html"))));
+  }).catch(() => caches.match(OFFLINE_PAGE))));
 });
