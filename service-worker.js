@@ -1,5 +1,5 @@
-const CACHE = "mylibrary-v11";
-const OFFLINE_PAGE = "./index.html?v=11";
+const CACHE = "mylibrary-v12";
+const OFFLINE_PAGE = "./index.html?v=12";
 const APP = [OFFLINE_PAGE, "./manifest.webmanifest", "./icon-180.png", "./icon-512.png"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(APP)).then(() => self.skipWaiting())));
 self.addEventListener("activate", event => event.waitUntil(
