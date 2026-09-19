@@ -45,9 +45,11 @@ const initialBooks = [{"id":"b0001","title":"1000 Places To See Before You Die",
 initialBooks.push(
   {"id":"wishlist-the-christie-affair","title":"The Christie Affair","status":"Haben wir","location":"Regal","category":"Roman","source":"recommendation+ordered","confidence":"sicher","firstOrderedOn":"","sourcePhotos":"","notes":"","readBy":"","loanedTo":""},
   {"id":"wishlist-the-sanatorium","title":"The Sanatorium","status":"Haben wir","location":"Regal","category":"Thriller","source":"recommendation+ordered","confidence":"sicher","firstOrderedOn":"","sourcePhotos":"","notes":"","readBy":"","loanedTo":""},
-  {"id":"wishlist-northern-spy","title":"Northern Spy","status":"Haben wir","location":"Regal","category":"Thriller","source":"recommendation+ordered","confidence":"sicher","firstOrderedOn":"","sourcePhotos":"","notes":"","readBy":"","loanedTo":""}
+  {"id":"wishlist-northern-spy","title":"Northern Spy","status":"Haben wir","location":"Regal","category":"Thriller","source":"recommendation+ordered","confidence":"sicher","firstOrderedOn":"","sourcePhotos":"","notes":"","readBy":"","loanedTo":""},
+  {"id":"loaned-the-subtle-art","title":"The Subtle Art of Not Giving a F*ck","status":"Verliehen","location":"Unbekannt","category":"Sachbuch","source":"confirmed-by-user","confidence":"sicher","firstOrderedOn":"","sourcePhotos":"","notes":"","readBy":"","loanedTo":"Unbekannt"}
 );
 const knownAuthors = {
+  'The Subtle Art of Not Giving a F*ck':'Mark Manson',
   'The Christie Affair':'Nina de Gramont',
   'The Sanatorium':'Sarah Pearse',
   'Northern Spy':'Flynn Berry',
@@ -397,6 +399,7 @@ const coverStoreKey = 'lesebibliothek.v6.covers';
 const authorStoreKey = 'lesebibliothek.v2.authors';
 const langStoreKey = 'lesebibliothek.v1.lang';
 const verifiedCoverUrls = {
+  "The Subtle Art of Not Giving a F*ck":"https://covers.openlibrary.org/b/isbn/9780062457714-M.jpg?default=false",
   "The Christie Affair":"https://covers.openlibrary.org/b/isbn/9781250792631-M.jpg?default=false",
   "The Sanatorium":"https://covers.openlibrary.org/b/isbn/9780593296691-M.jpg?default=false",
   "Northern Spy":"https://covers.openlibrary.org/b/isbn/9781474607131-M.jpg?default=false",
@@ -918,7 +921,7 @@ if ("serviceWorker" in navigator) {
       refreshing = true;
       window.location.reload();
     });
-    const registration = await navigator.serviceWorker.register("service-worker.js?v=16", { updateViaCache: "none" });
+    const registration = await navigator.serviceWorker.register("service-worker.js?v=17", { updateViaCache: "none" });
     registration.update();
   });
 }
