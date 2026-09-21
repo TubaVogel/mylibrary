@@ -1021,11 +1021,14 @@ function findBestBook(text){
     const mainTokens=mainTitle.split(' ').filter(token=>token.length>2);
     const authorTokens=normalize(bookAuthor(book)).split(' ').filter(token=>token.length>2);
     const coverage=list=>list.filter(token=>seen.has(token)).length/Math.max(list.length,1);
+    const containsPhrase=phrase=>(' '+haystack+' ').includes(' '+phrase+' ');
     const mainMatches=mainTokens.filter(token=>seen.has(token)).length;
-    let score=haystack.includes(title)?3:coverage(tokens);
-    if(mainTitle.length>=6&&haystack.includes(mainTitle)) score=Math.max(score,2);
+    const authorMatches=authorTokens.filter(token=>seen.has(token)).length;
+    let score=haystack===title?5:(containsPhrase(title)?3+Math.min(tokens.length,20)/100:coverage(tokens));
+    if(mainTitle.length>=6&&containsPhrase(mainTitle)) score=Math.max(score,2);
     if(mainMatches>=2) score=Math.max(score,coverage(mainTokens));
-    if(mainMatches>=2&&authorTokens.some(token=>seen.has(token))) score=Math.max(score,1.25);
+    if(mainMatches>=2&&authorMatches) score=Math.max(score,1.25);
+    if(mainTokens.length===1&&mainTokens[0].length>=4&&mainMatches===1&&authorMatches) score=Math.max(score,1.1+Math.min(authorMatches,3)/10);
     if(score>bestScore){bestScore=score;best=book;}
   });
   return bestScore>=.66?best:null;
@@ -1077,7 +1080,7 @@ if ("serviceWorker" in navigator) {
       refreshing = true;
       window.location.reload();
     });
-    const registration = await navigator.serviceWorker.register("service-worker.js?v=21", { updateViaCache: "none" });
+    const registration = await navigator.serviceWorker.register("service-worker.js?v=22", { updateViaCache: "none" });
     registration.update();
   });
 }
