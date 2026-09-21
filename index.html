@@ -1013,9 +1013,22 @@ function resetBookForm(){
 }
 function resetScan(){ stopCamera(); titleLookupInput.value=''; scanPreview.removeAttribute('src'); scanPreview.classList.remove('visible'); setScanStatus(''); }
 function findBestBook(text){
-  const haystack=normalize(text); if(!haystack)return null; let best=null; let bestScore=0;
-  books.forEach(book=>{ const title=normalize(book.title); if(!title)return; const tokens=title.split(' ').filter(token=>token.length>2); const score=haystack.includes(title)?2:(tokens.filter(token=>haystack.includes(token)).length/Math.max(tokens.length,1)); if(score>bestScore){bestScore=score;best=book;} });
-  return bestScore>=.58?best:null;
+  const haystack=normalize(text); if(!haystack)return null; const seen=new Set(haystack.split(' ').filter(Boolean)); let best=null; let bestScore=0;
+  books.forEach(book=>{
+    const title=normalize(book.title); if(!title)return;
+    const mainTitle=normalize(String(book.title||'').split(':')[0]);
+    const tokens=title.split(' ').filter(token=>token.length>2);
+    const mainTokens=mainTitle.split(' ').filter(token=>token.length>2);
+    const authorTokens=normalize(bookAuthor(book)).split(' ').filter(token=>token.length>2);
+    const coverage=list=>list.filter(token=>seen.has(token)).length/Math.max(list.length,1);
+    const mainMatches=mainTokens.filter(token=>seen.has(token)).length;
+    let score=haystack.includes(title)?3:coverage(tokens);
+    if(mainTitle.length>=6&&haystack.includes(mainTitle)) score=Math.max(score,2);
+    if(mainMatches>=2) score=Math.max(score,coverage(mainTokens));
+    if(mainMatches>=2&&authorTokens.some(token=>seen.has(token))) score=Math.max(score,1.25);
+    if(score>bestScore){bestScore=score;best=book;}
+  });
+  return bestScore>=.66?best:null;
 }
 function showLibrarySearch(term){
   stopCamera(); scanDialog.close(); tab='search'; filter='Alle'; query=term; search.value=term; document.querySelectorAll('.tabs button').forEach(button=>button.classList.toggle('active',button.dataset.tab==='search')); render();
@@ -1040,7 +1053,7 @@ async function readTitleFromCanvas(){
   let text='';
   if('TextDetector' in window){ try{ const detector=new TextDetector(); const lines=await detector.detect(cameraCanvas); text=lines.map(line=>line.rawValue).join(' '); }catch(_error){} }
   if(!text&&window.Tesseract){ try{ const result=await Tesseract.recognize(cameraCanvas,'eng+deu'); text=result.data.text||''; }catch(_error){} }
-  const candidate=text.replace(/\s+/g,' ').trim().slice(0,120);
+  const candidate=text.replace(/\s+/g,' ').trim().slice(0,500);
   if(candidate){ titleLookupInput.value=candidate; await lookupBookByTitle(candidate); }
   else { setScanStatus(lang==='de'?'Das Cover ist aufgenommen. Gib den Titel kurz ein, falls er nicht automatisch erkannt wurde.':'Photo captured. Enter the title if it was not recognized automatically.','warning'); titleLookupInput.focus(); }
 }
@@ -1064,7 +1077,7 @@ if ("serviceWorker" in navigator) {
       refreshing = true;
       window.location.reload();
     });
-    const registration = await navigator.serviceWorker.register("service-worker.js?v=20", { updateViaCache: "none" });
+    const registration = await navigator.serviceWorker.register("service-worker.js?v=21", { updateViaCache: "none" });
     registration.update();
   });
 }
