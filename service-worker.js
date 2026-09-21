@@ -1,6 +1,14 @@
-const CACHE = "mylibrary-v19";
-const OFFLINE_PAGE = "./index.html?v=19";
-const APP = [OFFLINE_PAGE, "./manifest.webmanifest", "./icon-180.png", "./icon-512.png"];
+const CACHE = "mylibrary-v20";
+const OFFLINE_PAGE = "./index.html?v=20";
+const APP = [
+  OFFLINE_PAGE,
+  "./manifest.webmanifest",
+  "./icon-180.png",
+  "./icon-512.png",
+  "./when-coffee-kale-compete.jpg",
+  "./feine-freunde.jpg",
+  "./the-power-of-now.jpg"
+];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(APP)).then(() => self.skipWaiting())));
 self.addEventListener("activate", event => event.waitUntil(
   caches.keys()
