@@ -56,7 +56,6 @@ initialBooks.push(
   {"id":"amazon-1399622757","title":"The Wedding People","status":"Haben wir","location":"Unbekannt / Amazon-Historie","category":"Roman","source":"amazon","confidence":"amazon-import","firstOrderedOn":"2026-02-17","sourcePhotos":"","notes":"","readBy":"","loanedTo":""},
   {"id":"amazon-3499014386","title":"Die schönste Version","status":"Haben wir","location":"Unbekannt / Amazon-Historie","category":"Roman","source":"amazon","confidence":"amazon-import","firstOrderedOn":"2026-01-31","sourcePhotos":"","notes":"","readBy":"","loanedTo":""},
   {"id":"amazon-3522179374","title":"Das kleine Gespenst","status":"Haben wir","location":"Unbekannt / Amazon-Historie","category":"Kinderbuch","source":"amazon","confidence":"amazon-import","firstOrderedOn":"2025-12-31","sourcePhotos":"","notes":"","readBy":"","loanedTo":""},
-  {"id":"amazon-b0915m5xxt","title":"Simple & Big Coloring Book for Toddler","status":"Haben wir","location":"Unbekannt / Amazon-Historie","category":"Kinderbuch","source":"amazon","confidence":"amazon-import","firstOrderedOn":"2025-12-03","sourcePhotos":"","notes":"","readBy":"","loanedTo":""},
   {"id":"amazon-1444795007","title":"Deliciously Ella","status":"Haben wir","location":"Regal","category":"Kochbuch","source":"amazon+regal","confidence":"sicher","firstOrderedOn":"2023-09-18","sourcePhotos":"IMG_8115","notes":"Hodder & Stoughton","readBy":"","loanedTo":""},
   {"id":"amazon-989752195x","title":"Passaporte para Português 2","status":"Haben wir","location":"Unbekannt / Amazon-Historie","category":"Sprachbuch","source":"amazon","confidence":"amazon-import","firstOrderedOn":"2020-04-06","sourcePhotos":"","notes":"","readBy":"","loanedTo":""},
   {"id":"amazon-3570103196","title":"Der Ernährungskompass","status":"Haben wir","location":"Regal","category":"Ernährung/Sachbuch","source":"amazon+regal","confidence":"sicher","firstOrderedOn":"2020-04-06","sourcePhotos":"IMG_8117","notes":"C. Bertelsmann","readBy":"","loanedTo":""},
@@ -468,7 +467,6 @@ const verifiedCoverUrls = {
   "The Wedding People":"https://covers.openlibrary.org/b/isbn/9781399622752-M.jpg?default=false",
   "Die schönste Version":"https://books.google.com/books/content?vid=ISBN9783499014383&printsec=frontcover&img=1&zoom=1&source=gbs_api",
   "Das kleine Gespenst":"https://covers.openlibrary.org/b/isbn/9783522179379-M.jpg?default=false",
-  "Simple & Big Coloring Book for Toddler":"https://images-na.ssl-images-amazon.com/images/P/B0915M5XXT.01.LZZZZZZZ.jpg",
   "Deliciously Ella":"https://covers.openlibrary.org/b/isbn/9781444795004-M.jpg?default=false",
   "Passaporte para Português 2":"https://books.google.com/books/content?vid=ISBN9789897521959&printsec=frontcover&img=1&zoom=1&source=gbs_api",
   "Der Ernährungskompass":"https://covers.openlibrary.org/b/isbn/9783570103197-M.jpg?default=false",
@@ -904,6 +902,12 @@ function mergeCatalog(catalog, localBooks) {
   return merged.concat(localBooks.filter(book => !used.has(book)));
 }
 let books = mergeCatalog(initialBooks, storedBooks);
+const removedGiftKey='lesebibliothek.v1.removed-gift-b0915m5xxt';
+if(localStorage.getItem(removedGiftKey)!=='done'){
+  books=books.filter(book=>normalize(book.title)!==normalize('Simple & Big Coloring Book for Toddler'));
+  localStorage.setItem(storeKey,JSON.stringify(books));
+  localStorage.setItem(removedGiftKey,'done');
+}
 // CELLAR_MIGRATION_START
 const cellarMigrationKey='lesebibliothek.v1.cellar-2026-09-v2';
 if(localStorage.getItem(cellarMigrationKey)!=='done'){
@@ -1160,7 +1164,7 @@ if ("serviceWorker" in navigator) {
       refreshing = true;
       window.location.reload();
     });
-    const registration = await navigator.serviceWorker.register("service-worker.js?v=23", { updateViaCache: "none" });
+    const registration = await navigator.serviceWorker.register("service-worker.js?v=24", { updateViaCache: "none" });
     registration.update();
   });
 }
