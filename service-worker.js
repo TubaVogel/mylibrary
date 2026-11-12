@@ -1,5 +1,5 @@
-const CACHE = "mylibrary-v25";
-const OFFLINE_PAGE = "./index.html?v=25";
+const CACHE = "mylibrary-v26";
+const OFFLINE_PAGE = "./index.html?v=26";
 const APP = [
   OFFLINE_PAGE,
   "./manifest.webmanifest",
